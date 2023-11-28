@@ -35,12 +35,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Single Tap", Toast.LENGTH_SHORT).show();
         });
 
-//        imageView.setOnLongClickListener(v -> {
-//            // 长按事件
-//            Toast.makeText(this, "Longlong Press", Toast.LENGTH_SHORT).show();
-//            return true;
-//        });
-
         imageView.setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
             scaleGestureDetector.onTouchEvent(event);
@@ -49,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        boolean isDoubleTap = false;
         @Override
         public boolean onDoubleTap(MotionEvent e) {
+            isDoubleTap = true;
             // 双击事件
             scaleFactor = (scaleFactor == 1.0f) ? 2.0f : 1.0f;
             imageView.setScaleX(scaleFactor);
@@ -58,12 +54,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-//        @Override
-//        public boolean onSingleTapUp(@NonNull MotionEvent e) {
-//
-//            Toast.makeText(MainActivity.this, "Single Press", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
 
         @Override
         public void onLongPress(MotionEvent e) {
