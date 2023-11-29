@@ -3,19 +3,11 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-// 双击事件，放大或者缩小
-//拖动事件，照片移动
-//长按事件，
-//双指旋转
-//双击并拖动
-//长按并拖动
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,12 +15,19 @@ public class MainActivity extends AppCompatActivity {
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
     private float scaleFactor = 1.0f;
-    private float rotationAngle = 0.0f;
+    private float rotationAngle = 0.0f;//旋转的角度
+    private float lastFocusX = 0;
+    private float lastFocusY = 0;
+    RelativeLayout rlImage;
+    private int colorNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        rlImage = findViewById(R.id.rl_image);
+        //rlImage.setBackgroundColor(Color.rgb(255, 255, 0)); // 设为黄色
 
         imageView = findViewById(R.id.imageView);
 
@@ -60,8 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onLongPress(MotionEvent e) {
+            colorNum = (colorNum+1)%2;
+            if(colorNum == 0){
+                rlImage.setBackgroundColor(getResources().getColor(R.color.teal_200)); // 设为黄色
+            }
+            else{
+                rlImage.setBackgroundColor(getResources().getColor(R.color.purple_500)); // 设为黄色
+            }
+
             // 长按事件
-            Toast.makeText(MainActivity.this, "Long Press", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "颜色改变成功！", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -75,6 +82,36 @@ public class MainActivity extends AppCompatActivity {
     private class MyScaleGestureListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
+
+            float focusX = detector.getFocusX();
+            float focusY = detector.getFocusY();
+            float currentSpan = detector.getCurrentSpan();
+
+            if (lastFocusX == 0 && lastFocusY == 0) {
+                lastFocusX = focusX;
+                lastFocusY = focusY;
+            }
+
+            // 当前帧与上一帧的手指向量
+            Vector2D v1 = new Vector2D(focusX - lastFocusX, focusY - lastFocusY);
+            Vector2D v2 = new Vector2D(focusX - focusX, focusY - focusY);
+
+            // 计算两个向量之间的角度
+            double angle = Vector2D.angleBetween(v1, v2);
+
+            // 积累总角度
+            rotationAngle += angle;
+            // Reset when reach limits
+            if (rotationAngle >= 360f) {
+                rotationAngle -= 360f;
+            } else if (rotationAngle <= -360f) {
+                rotationAngle += 360f;
+            }
+            // Save focus for next call
+            lastFocusX = focusX;
+            lastFocusY = focusY;
+            imageView.setRotation(rotationAngle);
+
             // 缩放事件
             scaleFactor *= detector.getScaleFactor();
             scaleFactor = Math.max(1.0f, Math.min(scaleFactor, 3.0f)); // 设置最大和最小缩放倍数
