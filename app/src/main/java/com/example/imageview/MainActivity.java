@@ -10,6 +10,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+// 双击事件，放大或者缩小
+//拖动事件，照片移动
+//长按事件，
+//双指旋转
+//双击并拖动
+//长按并拖动
+
 public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
@@ -28,12 +35,8 @@ public class MainActivity extends AppCompatActivity {
         gestureDetector = new GestureDetector(this, new MyGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(this, new MyScaleGestureListener());
 
+        //向view中设置照片
         imageView.setImageResource(R.drawable.img);
-
-        imageView.setOnClickListener(v -> {
-            // 单击事件
-            Toast.makeText(this, "Single Tap", Toast.LENGTH_SHORT).show();
-        });
 
         imageView.setOnTouchListener((v, event) -> {
             gestureDetector.onTouchEvent(event);
