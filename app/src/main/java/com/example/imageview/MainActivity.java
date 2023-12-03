@@ -1,4 +1,5 @@
 package com.example.imageview;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -6,6 +7,7 @@ import android.view.ScaleGestureDetector;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -20,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private float lastFocusY = 0;
     RelativeLayout rlImage;
     private int colorNum = 0;
+    MyDialog myDialog =null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         rlImage = findViewById(R.id.rl_image);
         //rlImage.setBackgroundColor(Color.rgb(255, 255, 0)); // 设为黄色
-
+        myDialog = new MyDialog(this);
         imageView = findViewById(R.id.imageView);
 
         gestureDetector = new GestureDetector(this, new MyGestureListener());
@@ -59,16 +63,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            colorNum = (colorNum+1)%2;
-            if(colorNum == 0){
-                rlImage.setBackgroundColor(getResources().getColor(R.color.teal_200)); // 设为黄色
-            }
-            else{
-                rlImage.setBackgroundColor(getResources().getColor(R.color.purple_500)); // 设为黄色
-            }
+            //colorNum = (colorNum+1)%2;
+//            if(colorNum == 0){
+//                rlImage.setBackgroundColor(getResources().getColor(R.color.teal_200)); // 设为黄色
+//            }
+//            else{
+//                rlImage.setBackgroundColor(getResources().getColor(R.color.purple_500)); // 设为黄色
+//            }
 
             // 长按事件
-            Toast.makeText(MainActivity.this, "颜色改变成功！", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, "颜色改变成功！", Toast.LENGTH_SHORT).show();
+            AlertDialog alertDialog = myDialog.create();
+            alertDialog.show();
+
         }
 
         @Override
